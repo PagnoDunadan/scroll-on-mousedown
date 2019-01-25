@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Scroll on drag</title>
+    <title>Scroll on mousedown</title>
     <style>
       #scrollable {
         display: flex;
@@ -44,7 +44,6 @@
 
       function registerScroll(event) {
         positionX = event.pageX;
-        oldTime = Date.now();
         html.addEventListener("mousemove", doScroll);
         html.addEventListener("mouseup", removeScroll);
       }
@@ -55,8 +54,7 @@
       }
 
       function doScroll(event) {
-        let newPositionX = event.pageX;
-        console.log(newPositionX - positionX);
+        const newPositionX = event.pageX;
         if (newPositionX < positionX) {
           header.scrollLeft += positionX - newPositionX;
         } else if (newPositionX > positionX) {
