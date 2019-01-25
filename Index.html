@@ -1,15 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Scroll on drag</title>
+    <style>
+      #scrollable {
+        display: flex;
+        background-color: red;
+        width: 400px;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        padding: 10px;
+      }
+      #scrollable > button:not(:first-child) {
+        margin-left: 10px;
+      }
+      .buttons {
+        min-width: auto;
+      }
+    </style>
+  </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
+  <body>
+    <div id="scrollable">
+      <button class="buttons">English</button>
+      <button class="buttons">English</button>
+      <button class="buttons">English</button>
+      <button class="buttons">English</button>
+      <button class="buttons">English</button>
+      <button class="buttons">English</button>
+      <button class="buttons">English</button>
+      <button class="buttons">English</button>
+    </div>
 
-<body>
+    <script>
+      const html = document.querySelector("html");
+      const header = document.querySelector("#scrollable");
+      let positionX;
 
-</body>
+      header.addEventListener("mousedown", registerScroll);
 
+      function registerScroll(event) {
+        positionX = event.pageX;
+        oldTime = Date.now();
+        html.addEventListener("mousemove", doScroll);
+        html.addEventListener("mouseup", removeScroll);
+      }
+
+      function removeScroll(event) {
+        html.removeEventListener("mousemove", doScroll);
+        html.removeEventListener("mouseup", removeScroll);
+      }
+
+      function doScroll(event) {
+        let newPositionX = event.pageX;
+        console.log(newPositionX - positionX);
+        if (newPositionX < positionX) {
+          header.scrollLeft += positionX - newPositionX;
+        } else if (newPositionX > positionX) {
+          header.scrollLeft += -(newPositionX - positionX);
+        }
+        positionX = newPositionX;
+      }
+    </script>
+  </body>
 </html>
