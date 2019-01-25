@@ -20,11 +20,19 @@
       .buttons {
         min-width: auto;
       }
+      .disable-text-select {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
     </style>
   </head>
 
   <body>
-    <div id="scrollable">
+    <div id="scrollable" class="disable-text-select">
       <button class="buttons">English</button>
       <button class="buttons">English</button>
       <button class="buttons">English</button>
