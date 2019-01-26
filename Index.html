@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Scroll on mousedown</title>
+    <!-- TODO: Remove unnecessary styling -->
     <style>
+      body {
+        width: 150%;
+      }
       #scrollable {
         display: flex;
+        margin-left: 200px;
         background-color: red;
         width: 400px;
         overflow-x: hidden;
@@ -33,17 +38,20 @@
 
   <body>
     <div id="scrollable" class="disable-text-select">
-      <button class="buttons">English</button>
-      <button class="buttons">English</button>
-      <button class="buttons">English</button>
-      <button class="buttons">English</button>
-      <button class="buttons">English</button>
-      <button class="buttons">English</button>
-      <button class="buttons">English</button>
-      <button class="buttons">English</button>
+      <button class="buttons">English 1</button>
+      <button class="buttons">English 2</button>
+      <button class="buttons">English 3</button>
+      <button class="buttons">English 4</button>
+      <button class="buttons">English 5</button>
+      <button class="buttons">English 6</button>
+      <button class="buttons">English 7</button>
+      <button class="buttons">English 8</button>
+      <button class="buttons">English 9</button>
+      <button class="buttons">English 10</button>
     </div>
 
     <script>
+      // TODO: Make code work in IE 11
       const html = document.querySelector("html");
       const header = document.querySelector("#scrollable");
       let positionX;
@@ -51,17 +59,20 @@
       header.addEventListener("mousedown", registerScroll);
 
       function registerScroll(event) {
+        console.log("registerScroll");
         positionX = event.pageX;
         html.addEventListener("mousemove", doScroll);
         html.addEventListener("mouseup", removeScroll);
       }
 
       function removeScroll(event) {
+        console.log("removeScroll");
         html.removeEventListener("mousemove", doScroll);
         html.removeEventListener("mouseup", removeScroll);
       }
 
       function doScroll(event) {
+        console.log("doScroll");
         const newPositionX = event.pageX;
         if (newPositionX < positionX) {
           header.scrollLeft += positionX - newPositionX;
@@ -69,6 +80,51 @@
           header.scrollLeft += -(newPositionX - positionX);
         }
         positionX = newPositionX;
+      }
+    </script>
+
+    <script>
+      const buttons = document.querySelectorAll(".buttons");
+      const header1 = document.querySelector("#scrollable");
+      let shouldMove;
+
+      buttons.forEach(function(button) {
+        button.addEventListener("click", moveToBeginning);
+        button.addEventListener("mousedown", stopIfMouseMoved);
+      });
+
+      function stopIfMouseMoved(event) {
+        console.log("stopIfMouseMoved");
+        const button = event.target;
+        shouldMove = true;
+        button.addEventListener("mousemove", stopMove);
+      }
+
+      function stopMove(event) {
+        console.log("stopMove");
+        const button = event.target;
+        shouldMove = false;
+        button.removeEventListener("mousemove", stopMove);
+      }
+
+      function moveToBeginning(event) {
+        if (!shouldMove) return;
+        console.log("moveToBeginning");
+        const button = event.target;
+        const buttonOffset = button.getBoundingClientRect().left;
+        const headerOffset = header1.getBoundingClientRect().left;
+
+        const headerPaddingLeftValue = window
+          .getComputedStyle(header, null)
+          .getPropertyValue("padding-left");
+        const headerPaddingLeftMatch = headerPaddingLeftValue.match(/\d+/g);
+        const headerPaddingLeft = parseInt(headerPaddingLeftMatch[0]);
+
+        // TODO: Make scrolling smooth in browsers other than Chrome
+        header.style.scrollBehavior = "smooth";
+        header.scrollLeft += buttonOffset - headerOffset - headerPaddingLeft;
+        header.style.scrollBehavior = "auto";
+        button.removeEventListener("mousemove", stopMove);
       }
     </script>
   </body>
