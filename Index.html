@@ -86,6 +86,24 @@
         }
         positionX = newPositionX;
       }
+
+      let oldOverflowX;
+      header.addEventListener("touchstart", registerMobileScroll);
+
+      function registerMobileScroll(event) {
+        console.log("registerMobileScroll");
+        oldOverflowX = header.style.overflowX;
+        header.style.overflowX = "scroll";
+        header.addEventListener("touchend", removeMobileScroll);
+        header.addEventListener("touchcancel", removeMobileScroll);
+      }
+
+      function removeMobileScroll(event) {
+        console.log("removeMobileScroll");
+        header.style.overflowX = oldOverflowX;
+        header.removeEventListener("touchend", removeMobileScroll);
+        header.removeEventListener("touchcancel", removeMobileScroll);
+      }
     </script>
 
     <script>
