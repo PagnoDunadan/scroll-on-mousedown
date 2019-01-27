@@ -18,6 +18,7 @@
         overflow-x: hidden;
         overflow-y: hidden;
         padding: 10px;
+        scroll-behavior: smooth;
       }
       #scrollable > button:not(:first-child) {
         margin-left: 10px;
@@ -54,12 +55,15 @@
       // TODO: Make code work in IE 11
       const html = document.querySelector("html");
       const header = document.querySelector("#scrollable");
+      let oldScrollBehavior;
       let positionX;
 
       header.addEventListener("mousedown", registerScroll);
 
       function registerScroll(event) {
         console.log("registerScroll");
+        oldScrollBehavior = header.style.scrollBehavior;
+        header.style.scrollBehavior = "auto";
         positionX = event.pageX;
         html.addEventListener("mousemove", doScroll);
         html.addEventListener("mouseup", removeScroll);
@@ -67,6 +71,7 @@
 
       function removeScroll(event) {
         console.log("removeScroll");
+        header.style.scrollBehavior = oldScrollBehavior;
         html.removeEventListener("mousemove", doScroll);
         html.removeEventListener("mouseup", removeScroll);
       }
@@ -120,10 +125,7 @@
         const headerPaddingLeftMatch = headerPaddingLeftValue.match(/\d+/g);
         const headerPaddingLeft = parseInt(headerPaddingLeftMatch[0]);
 
-        // TODO: Make scrolling smooth in browsers other than Chrome
-        header.style.scrollBehavior = "smooth";
         header.scrollLeft += buttonOffset - headerOffset - headerPaddingLeft;
-        header.style.scrollBehavior = "auto";
         button.removeEventListener("mousemove", stopMove);
       }
     </script>
