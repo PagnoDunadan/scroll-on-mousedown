@@ -113,30 +113,36 @@
       (function() {
         const header = document.querySelector("#scrollable");
         const buttons = document.querySelectorAll(".buttons");
-        let shouldMove;
+        const moveThreshold = 2;
+        let positionX;
+        let positionY;
 
         buttons.forEach(function(button) {
-          button.addEventListener("click", moveToBeginning);
-          button.addEventListener("mousedown", stopIfMouseMoved);
+          button.addEventListener("click", doMove);
+          button.addEventListener("mousedown", saveInitialPosition);
         });
 
+        function saveInitialPosition(event) {
+          positionX = event.pageX;
+          positionY = event.pageY;
+        }
+
         function stopIfMouseMoved(event) {
-          console.log("stopIfMouseMoved");
-          const button = event.target;
-          shouldMove = true;
-          button.addEventListener("mousemove", stopMove);
+          const newPositionX = event.pageX;
+          const newPositionY = event.pageY;
+
+          const newTotal = newPositionX + newPositionY;
+          const oldTotal = positionX + positionY;
+
+          if (Math.abs(oldTotal - newTotal) > moveThreshold) return true;
+          return false;
         }
 
-        function stopMove(event) {
-          console.log("stopMove");
-          const button = event.target;
-          shouldMove = false;
-          button.removeEventListener("mousemove", stopMove);
-        }
+        function doMove(event) {
+          const stop = stopIfMouseMoved(event);
+          if (stop) return;
+          console.log("doMove");
 
-        function moveToBeginning(event) {
-          if (!shouldMove) return;
-          console.log("moveToBeginning");
           const button = event.target;
           const buttonOffset = button.getBoundingClientRect().left;
           const headerOffset = header.getBoundingClientRect().left;
@@ -148,7 +154,6 @@
           const headerPaddingLeft = parseInt(headerPaddingLeftMatch[0]);
 
           header.scrollLeft += buttonOffset - headerOffset - headerPaddingLeft;
-          button.removeEventListener("mousemove", stopMove);
         }
       })();
     </script>
