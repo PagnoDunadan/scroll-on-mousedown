@@ -53,99 +53,104 @@
 
     <script>
       // TODO: Make code work in IE 11
-      const html = document.querySelector("html");
-      const header = document.querySelector("#scrollable");
-      let oldScrollBehavior;
-      let positionX;
+      (function() {
+        const html = document.querySelector("html");
+        const header = document.querySelector("#scrollable");
+        let oldScrollBehavior;
+        let positionX;
 
-      header.addEventListener("mousedown", registerScroll);
+        header.addEventListener("mousedown", registerScroll);
 
-      function registerScroll(event) {
-        console.log("registerScroll");
-        oldScrollBehavior = header.style.scrollBehavior;
-        header.style.scrollBehavior = "auto";
-        positionX = event.pageX;
-        html.addEventListener("mousemove", doScroll);
-        html.addEventListener("mouseup", removeScroll);
-      }
-
-      function removeScroll(event) {
-        console.log("removeScroll");
-        header.style.scrollBehavior = oldScrollBehavior;
-        html.removeEventListener("mousemove", doScroll);
-        html.removeEventListener("mouseup", removeScroll);
-      }
-
-      function doScroll(event) {
-        console.log("doScroll");
-        const newPositionX = event.pageX;
-        if (newPositionX < positionX) {
-          header.scrollLeft += positionX - newPositionX;
-        } else if (newPositionX > positionX) {
-          header.scrollLeft += -(newPositionX - positionX);
+        function registerScroll(event) {
+          console.log("registerScroll");
+          oldScrollBehavior = header.style.scrollBehavior;
+          header.style.scrollBehavior = "auto";
+          positionX = event.pageX;
+          html.addEventListener("mousemove", doScroll);
+          html.addEventListener("mouseup", removeScroll);
         }
-        positionX = newPositionX;
-      }
 
-      let oldOverflowX;
-      header.addEventListener("touchstart", registerMobileScroll);
+        function removeScroll(event) {
+          console.log("removeScroll");
+          header.style.scrollBehavior = oldScrollBehavior;
+          html.removeEventListener("mousemove", doScroll);
+          html.removeEventListener("mouseup", removeScroll);
+        }
 
-      function registerMobileScroll(event) {
-        console.log("registerMobileScroll");
-        oldOverflowX = header.style.overflowX;
-        header.style.overflowX = "scroll";
-        header.addEventListener("touchend", removeMobileScroll);
-        header.addEventListener("touchcancel", removeMobileScroll);
-      }
+        function doScroll(event) {
+          console.log("doScroll");
+          const newPositionX = event.pageX;
+          if (newPositionX < positionX) {
+            header.scrollLeft += positionX - newPositionX;
+          } else if (newPositionX > positionX) {
+            header.scrollLeft += -(newPositionX - positionX);
+          }
+          positionX = newPositionX;
+        }
+      })();
 
-      function removeMobileScroll(event) {
-        console.log("removeMobileScroll");
-        header.style.overflowX = oldOverflowX;
-        header.removeEventListener("touchend", removeMobileScroll);
-        header.removeEventListener("touchcancel", removeMobileScroll);
-      }
-    </script>
+      (function() {
+        const header = document.querySelector("#scrollable");
+        let oldOverflowX;
+        header.addEventListener("touchstart", registerMobileScroll);
 
-    <script>
-      const buttons = document.querySelectorAll(".buttons");
-      const header1 = document.querySelector("#scrollable");
-      let shouldMove;
+        function registerMobileScroll(event) {
+          console.log("registerMobileScroll");
+          oldOverflowX = header.style.overflowX;
+          header.style.overflowX = "scroll";
+          header.addEventListener("touchend", removeMobileScroll);
+          header.addEventListener("touchcancel", removeMobileScroll);
+        }
 
-      buttons.forEach(function(button) {
-        button.addEventListener("click", moveToBeginning);
-        button.addEventListener("mousedown", stopIfMouseMoved);
-      });
+        function removeMobileScroll(event) {
+          console.log("removeMobileScroll");
+          header.style.overflowX = oldOverflowX;
+          header.removeEventListener("touchend", removeMobileScroll);
+          header.removeEventListener("touchcancel", removeMobileScroll);
+        }
+      })();
 
-      function stopIfMouseMoved(event) {
-        console.log("stopIfMouseMoved");
-        const button = event.target;
-        shouldMove = true;
-        button.addEventListener("mousemove", stopMove);
-      }
+      (function() {
+        const header = document.querySelector("#scrollable");
+        const buttons = document.querySelectorAll(".buttons");
+        let shouldMove;
 
-      function stopMove(event) {
-        console.log("stopMove");
-        const button = event.target;
-        shouldMove = false;
-        button.removeEventListener("mousemove", stopMove);
-      }
+        buttons.forEach(function(button) {
+          button.addEventListener("click", moveToBeginning);
+          button.addEventListener("mousedown", stopIfMouseMoved);
+        });
 
-      function moveToBeginning(event) {
-        if (!shouldMove) return;
-        console.log("moveToBeginning");
-        const button = event.target;
-        const buttonOffset = button.getBoundingClientRect().left;
-        const headerOffset = header1.getBoundingClientRect().left;
+        function stopIfMouseMoved(event) {
+          console.log("stopIfMouseMoved");
+          const button = event.target;
+          shouldMove = true;
+          button.addEventListener("mousemove", stopMove);
+        }
 
-        const headerPaddingLeftValue = window
-          .getComputedStyle(header, null)
-          .getPropertyValue("padding-left");
-        const headerPaddingLeftMatch = headerPaddingLeftValue.match(/\d+/g);
-        const headerPaddingLeft = parseInt(headerPaddingLeftMatch[0]);
+        function stopMove(event) {
+          console.log("stopMove");
+          const button = event.target;
+          shouldMove = false;
+          button.removeEventListener("mousemove", stopMove);
+        }
 
-        header.scrollLeft += buttonOffset - headerOffset - headerPaddingLeft;
-        button.removeEventListener("mousemove", stopMove);
-      }
+        function moveToBeginning(event) {
+          if (!shouldMove) return;
+          console.log("moveToBeginning");
+          const button = event.target;
+          const buttonOffset = button.getBoundingClientRect().left;
+          const headerOffset = header.getBoundingClientRect().left;
+
+          const headerPaddingLeftValue = window
+            .getComputedStyle(header, null)
+            .getPropertyValue("padding-left");
+          const headerPaddingLeftMatch = headerPaddingLeftValue.match(/\d+/g);
+          const headerPaddingLeft = parseInt(headerPaddingLeftMatch[0]);
+
+          header.scrollLeft += buttonOffset - headerOffset - headerPaddingLeft;
+          button.removeEventListener("mousemove", stopMove);
+        }
+      })();
     </script>
   </body>
 </html>
