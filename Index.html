@@ -24,6 +24,7 @@
         margin-left: 10px;
       }
       .buttons {
+        white-space: nowrap;
         min-width: auto;
       }
       .disable-text-select {
@@ -68,6 +69,7 @@
           positionX = event.pageX;
           html.addEventListener("mousemove", doScroll);
           html.addEventListener("mouseup", removeScroll);
+          html.addEventListener("mouseleave", removeScroll);
         }
 
         function removeScroll(event) {
@@ -75,6 +77,7 @@
           header.style.scrollBehavior = oldScrollBehavior;
           html.removeEventListener("mousemove", doScroll);
           html.removeEventListener("mouseup", removeScroll);
+          html.removeEventListener("mouseleave", removeScroll);
         }
 
         function doScroll(event) {
@@ -117,10 +120,11 @@
         let positionX;
         let positionY;
 
-        buttons.forEach(function(button) {
+        for (let i = 0; i < buttons.length; i++) {
+          const button = buttons[i];
           button.addEventListener("click", doMove);
           button.addEventListener("mousedown", saveInitialPosition);
-        });
+        }
 
         function saveInitialPosition(event) {
           positionX = event.pageX;
