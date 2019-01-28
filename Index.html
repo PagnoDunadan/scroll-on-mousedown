@@ -145,15 +145,14 @@
 
           const button = event.target;
           const buttonOffset = button.getBoundingClientRect().left;
+          const buttonWidth = button.getBoundingClientRect().width;
           const headerOffset = header.getBoundingClientRect().left;
+          const headerWidth = header.getBoundingClientRect().width;
 
-          const headerPaddingLeftValue = window
-            .getComputedStyle(header, null)
-            .getPropertyValue("padding-left");
-          const headerPaddingLeftMatch = headerPaddingLeftValue.match(/\d+/g);
-          const headerPaddingLeft = parseInt(headerPaddingLeftMatch[0]);
+          const currentPosition = buttonOffset + buttonWidth / 2;
+          const moveTo = headerOffset + headerWidth / 2;
 
-          header.scrollLeft += buttonOffset - headerOffset - headerPaddingLeft;
+          header.scrollLeft += currentPosition - moveTo;
         }
       })();
     </script>
